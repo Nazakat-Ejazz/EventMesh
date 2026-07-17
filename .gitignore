@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+.next/
+out/
+
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+ # IDE
+.idea/
+.vscode/
+*.swp
+*.suo
+ 
+# Test coverage
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+ 
+# Turbo
+.turbo/
