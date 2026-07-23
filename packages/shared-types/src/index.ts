@@ -38,9 +38,8 @@ export interface Event {
   category: EventCategory;
   status: EventStatus;
   capacity: number;
-  imageUrl: string;
+  imageUrl?: string;
   createdAt: string;
-  updatedAt: string;
   organizerId: string;
 }
 

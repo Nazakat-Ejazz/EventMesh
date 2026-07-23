@@ -14,6 +14,9 @@ import {
   EventCategory,
   UserRole,
 } from '@eventmesh/shared-types';
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipes';
+import { CreateEventDTO, CreateEventSchema } from './dto/create-event.dto';
+import { UpdateEventDTO, UpdateEventSchema } from './dto/update-event.dto';
 
 @Controller('events')
 export class EventsController {
@@ -43,7 +46,9 @@ export class EventsController {
   }
 
   @Post()
-  async createEvent(@Body() dto: any) {
+  async createEvent(
+    @Body(new ZodValidationPipe(CreateEventSchema)) dto: CreateEventDTO,
+  ) {
     // TODO: add auth guard later
     return this.eventsService.createEvent(
       dto,
@@ -53,7 +58,10 @@ export class EventsController {
   }
 
   @Patch(':id')
-  async updateEvent(@Param('id') id: string, @Body() dto: any) {
+  async updateEvent(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(UpdateEventSchema)) dto: UpdateEventDTO,
+  ) {
     // // TODO: add auth guard later
     return this.eventsService.updateEvent(
       id,

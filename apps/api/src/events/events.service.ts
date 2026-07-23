@@ -16,7 +16,7 @@ export class EventsService {
   constructor(private readonly eventsRepository: EventRepository) {}
 
   async createEvent(
-    dto: Omit<EventEntity, 'id' | 'createdAt' | 'status'>,
+    dto: Omit<EventEntity, 'id' | 'createdAt' | 'status' | 'organizerId'>,
     userId: string,
     userRole: UserRole,
   ): Promise<EventEntity> {
