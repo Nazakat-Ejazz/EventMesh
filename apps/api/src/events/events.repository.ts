@@ -7,12 +7,16 @@ import {
   QueryCommand,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { Event, EventCategory, EventStatus } from '@eventmesh/shared-types';
+import {
+  Event as EventEntity,
+  EventCategory,
+  EventStatus,
+} from '@eventmesh/shared-types';
 import { DynamoDBClientProvider } from '../common/dynamodb-client.provider';
 import { generateId, nowIso } from '@eventmesh/shared-utils';
 
 @Injectable()
-export class EventsRepository {
+export class EventRepository {
   private readonly tableName: string;
 
   constructor(
@@ -28,10 +32,10 @@ export class EventsRepository {
 
   /* Method to create a new Event */
   async create(
-    eventData: Omit<Event, 'id' | 'createdAt' | 'status'> & {
+    eventData: Omit<EventEntity, 'id' | 'createdAt' | 'status'> & {
       organizerId: string;
     },
-  ): Promise<Event> {
+  ): Promise<EventEntity> {
     const id = generateId();
     const event = {
       ...eventData,
@@ -60,7 +64,7 @@ export class EventsRepository {
   }
 
   /* Method to retrieve an event by ID */
-  async findById(id: string): Promise<Event | null> {
+  async findById(id: string): Promise<EventEntity | null> {
     const result = await this.client.send(
       new GetCommand({
         TableName: this.tableName,
@@ -77,7 +81,7 @@ export class EventsRepository {
 
     const { PK, SK, GSI1PK, GSI1SK, GSI2PK, GSI2SK, ...event } = result.Item;
 
-    return event as Event;
+    return event as EventEntity;
   }
 
   /* List events with pagination and optional filtering. */
@@ -87,7 +91,7 @@ export class EventsRepository {
     category?: EventCategory;
     startDateFrom?: string;
     startDateTo?: string;
-  }): Promise<{ events: Event[]; nextCursor?: string }> {
+  }): Promise<{ events: EventEntity[]; nextCursor?: string }> {
     const {
       limit = 20,
       cursor,
@@ -133,7 +137,7 @@ export class EventsRepository {
 
     const events = (result.Items || []).map((item) => {
       const { PK, SK, GSI1PK, GSI1SK, GSI2PK, GSI2SK, ...event } = item;
-      return event as Event;
+      return event as EventEntity;
     });
 
     const nextCursor = result.LastEvaluatedKey
@@ -146,8 +150,8 @@ export class EventsRepository {
   /* method to update an event */
   async update(
     id: string,
-    updates: Partial<Omit<Event, 'id' | 'createdAt'>>,
-  ): Promise<Event> {
+    updates: Partial<Omit<EventEntity, 'id' | 'createdAt'>>,
+  ): Promise<EventEntity> {
     const updateExpression: string[] = [];
     const expressionAttributeNames: Record<string, string> = {};
     const expressionAttributeValues: Record<string, unknown> = {};
@@ -178,7 +182,7 @@ export class EventsRepository {
     const { PK, SK, GSI1PK, GSI1SK, GSI2PK, GSI2SK, ...event } =
       result.Attributes!;
 
-    return event as Event;
+    return event as EventEntity;
   }
 
   /* method to delete an event */
