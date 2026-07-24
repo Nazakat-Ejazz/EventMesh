@@ -7,7 +7,12 @@ export default registerAs('app', () => ({
   webUrl: process.env.WEB_URL || 'http://localhost:3000',
   region: process.env.AWS_REGION || 'us-east-1',
 
-  dynamoDB: {
+  // dynamoDB: {
+  //   tableName: process.env.DYNAMODB_TABLE_NAME || 'eventmesh-local',
+  //   endpoint: process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000',
+  // },
+
+  dynamodb: {
     tableName: process.env.DYNAMODB_TABLE_NAME || 'eventmesh-local',
     endpoint: process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000',
   },

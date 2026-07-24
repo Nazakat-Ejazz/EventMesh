@@ -5,16 +5,29 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 @Injectable()
 export class DynamoDBClientProvider {
-  public readonly client: DynamoDBClient;
+  public readonly client: DynamoDBDocumentClient;
 
   constructor(private configService: ConfigService) {
     const region = this.configService.get<string>('app.region')!;
     const endpoint = this.configService.get<string>('app.dynamodb.endpoint');
 
-    const clientConfig: { region: string; endpoint?: string } = { region };
+    console.log('=== DYNAMODB CONFIG ===');
+    console.log('region:', region);
+    console.log('endpoint:', endpoint);
+    console.log('========================');
 
-    if (endpoint && endpoint.includes('localhost')) {
+    const clientConfig: {
+      region: string;
+      endpoint?: string;
+      credentials?: { accessKeyId: string; secretAccessKey: string };
+    } = { region };
+
+    if (endpoint) {
       clientConfig.endpoint = endpoint;
+      clientConfig.credentials = {
+        accessKeyId: 'dummy',
+        secretAccessKey: 'dummy',
+      };
     }
 
     const baseClient = new DynamoDBClient(clientConfig);
