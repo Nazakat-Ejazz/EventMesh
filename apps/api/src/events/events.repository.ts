@@ -173,7 +173,7 @@ export class EventRepository {
         },
         UpdateExpression: `SET ${updateExpression.join(', ')}`,
         ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeNames,
+        ExpressionAttributeValues: expressionAttributeValues,
         ConditionExpression: 'attribute_exists(PK)',
         ReturnValues: 'ALL_NEW',
       }),
