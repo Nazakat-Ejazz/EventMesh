@@ -148,3 +148,19 @@ export interface ApiResponse<T> {
   error?: ApiError;
   meta?: PaginationMeta;
 }
+
+/* Cognito JWT Paylaod */
+export interface CognitoJwtPayload {
+  sub: string;
+  email: string;
+  'custom:role'?: string;
+  exp: number;
+  iat: number;
+}
+
+/* Cognito JWT Paylaod */
+export interface CurrentUserPayload {
+  sub: string;
+  email: string;
+  role: string;
+}
