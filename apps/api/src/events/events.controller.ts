@@ -7,16 +7,20 @@ import {
   Body,
   Param,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import {
   Event as EventEntity,
   EventCategory,
   UserRole,
+  CurrentUserPayload,
 } from '@eventmesh/shared-types';
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipes';
 import { CreateEventDTO, CreateEventSchema } from './dto/create-event.dto';
 import { UpdateEventDTO, UpdateEventSchema } from './dto/update-event.dto';
+import { CognitoAuthGuard } from '@/auth/cognito-auth.guard';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
 
 @Controller('events')
 export class EventsController {
@@ -46,54 +50,48 @@ export class EventsController {
   }
 
   @Post()
+  @UseGuards(CognitoAuthGuard)
   async createEvent(
     @Body(new ZodValidationPipe(CreateEventSchema)) dto: CreateEventDTO,
+    @CurrentUser() user: CurrentUserPayload,
   ) {
-    // TODO: add auth guard later
-    return this.eventsService.createEvent(
-      dto,
-      'temp-user-id',
-      UserRole.ORGANIZER,
-    );
+    return this.eventsService.createEvent(dto, user.sub, user.role);
   }
 
   @Patch(':id')
+  @UseGuards(CognitoAuthGuard)
   async updateEvent(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateEventSchema)) dto: UpdateEventDTO,
+    @CurrentUser() user: CurrentUserPayload,
   ) {
-    // // TODO: add auth guard later
-    return this.eventsService.updateEvent(
-      id,
-      dto,
-      'temp-user-id',
-      UserRole.ORGANIZER,
-    );
+    return this.eventsService.updateEvent(id, dto, user.sub, user.role);
   }
 
   @Patch(':id/publish')
-  async publishEvent(@Param('id') id: string) {
-    // TODO: add auth guard later
-    return this.eventsService.publishEvent(
-      id,
-      'temp-user-id',
-      UserRole.ORGANIZER,
-    );
+  @UseGuards(CognitoAuthGuard)
+  async publishEvent(
+    @Param('id') id: string,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.eventsService.publishEvent(id, user.sub, user.role);
   }
 
   @Patch(':id/unpublish')
-  async unpublishEvent(@Param('id') id: string) {
-    // TODO: add auth guard later
-    return this.eventsService.unpublishEvent(id, UserRole.ADMIN);
+  @UseGuards(CognitoAuthGuard)
+  async unpublishEvent(
+    @Param('id') id: string,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.eventsService.unpublishEvent(id, user.role);
   }
 
   @Delete(':id')
-  async deleteEvent(@Param('id') id: string) {
-    // TODO: add auth guard later
-    return this.eventsService.deleteEvent(
-      id,
-      'temp-user-id',
-      UserRole.ORGANIZER,
-    );
+  @UseGuards(CognitoAuthGuard)
+  async deleteEvent(
+    @Param('id') id: string,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    return this.eventsService.deleteEvent(id, user.sub, user.role);
   }
 }

@@ -162,5 +162,5 @@ export interface CognitoJwtPayload {
 export interface CurrentUserPayload {
   sub: string;
   email: string;
-  role: string;
+  role: UserRole;
 }
